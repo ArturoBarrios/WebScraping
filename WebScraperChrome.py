@@ -2,60 +2,59 @@ from selenium import webdriver
 from selenium.webdriver.support.wait import WebDriverWait
 from selenium.webdriver.support import expected_conditions as EC
 from selenium.webdriver.common.by import By
+from DROP_SCRAPE import DROP
+from EBAY_SCRAPE import EBAY
+
 import time
 driver = webdriver.Chrome()
 driver.get("https://drop.com/?origin=%2Fhome")
 
 delay = 3 # seconds
 
-#open sign up modal
-login_button = WebDriverWait(driver, 5).until(EC.presence_of_element_located((By.CLASS_NAME, "splash__sign_in_button ")))
-login_button.click()
-
-#wait for all buttons to load
-time.sleep(5)
-WebDriverWait(driver, 5).until(EC.presence_of_element_located((By.CLASS_NAME, "button--emulate-continue-as")))
-#send username and password to login
-login_button = None
-try:
-    driver.find_element_by_name("username").send_keys("arturobarrios357@gmail.com")
-except:
-    driver.find_element_by_name("email").send_keys("arturobarrios357@gmail.com")
-driver.find_element_by_name("password").send_keys("Ruforufo4$")
-try:
-    login_button = driver.find_element(By.XPATH, '//button[text()="Continue"]')
-except:
-    login_button = driver.find_element(By.XPATH, '//button[text()="Log in"]')
-login_button.click()
-
-#go to shop link
-time.sleep(5)
-driver.find_element_by_link_text("SHOP").click()
-time.sleep(5)
-#scroll to bottom
-SCROLL_PAUSE_TIME = 0.5
-# Get scroll height
-last_height = driver.execute_script("return document.body.scrollHeight")
-
-while True:
-    # Scroll down to bottom
-    driver.execute_script("window.scrollTo(0, document.body.scrollHeight);")
-
-    # Wait to load page
-    time.sleep(SCROLL_PAUSE_TIME)
-
-    # Calculate new scroll height and compare with last scroll height
-    new_height = driver.execute_script("return document.body.scrollHeight")
-    if new_height == last_height:
-        break
-    last_height = new_height
+#sign in to drop website
+drop = DROP(driver)
+ebay = EBAY(driver)
+drop.login()
+time.sleep(2)
+#gather hyper links to purchasable items
+hyperlinks = drop.gather_hyper_links()
 
 
-elems = driver.find_elements_by_xpath("//a[@href]")
-count = 0
-for elem in elems:
-    href = str(elem.get_attribute("href"))
-    if "buy" in href and "discussion" not in href :
-        count+=1
-        print(elem.get_attribute("href"))
-print(count)
+
+index = 0
+# #go to hyperlink and gather price information
+for hyperlink_element in hyperlinks:
+    if index==0:
+        #open new hyperlink
+        drop.open_new_drop_tab(hyperlinks[1])
+        #price:    wdio__price Text__text__PazWx Text__type--price__1mumP
+        time.sleep(3)
+        price = drop.get_new_price()
+        if price is not None:
+            print("Price: ",price,"\n")
+            item_name = drop.get_item_name()
+            #print("Item Name: ",item_name)
+            retail_price = drop.get_retail_price()
+            print("Retail Price: ",retail_price,"\n")
+            rating_count = drop.get_rating_count()
+            print("Rating Count: ",rating_count,"\n")
+            units_sold = drop.get_units_sold()
+            print("Units Sold: ",units_sold,"\n\n\n")
+            drop.close_tab(-1)
+            time.sleep(1)
+            #go to ebay tab
+            ebay.open_ebay_tab()
+            time.sleep(2)
+            #login
+            ebay.login()
+            time.sleep(2)
+            #search for item
+            ebay.search_item("shoes")
+
+            #close tab
+            # ebay.close_tab(-1)
+            # time.sleep(2)
+
+    print("\n\n\n\n\n")
+
+    index+=1
