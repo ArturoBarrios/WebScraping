@@ -26,7 +26,7 @@ index = 0
 for hyperlink_element in hyperlinks:
     if index==0:
         #open new hyperlink
-        drop.open_new_drop_tab(hyperlinks[1])
+        drop.open_new_drop_tab(hyperlinks[2])
         #price:    wdio__price Text__text__PazWx Text__type--price__1mumP
         time.sleep(3)
         price = drop.get_new_price()
@@ -44,17 +44,26 @@ for hyperlink_element in hyperlinks:
             time.sleep(1)
             #go to ebay tab
             ebay.open_ebay_tab()
-            time.sleep(2)
+            time.sleep(5)
             #login
             ebay.login()
             time.sleep(2)
             #search for item
-            ebay.search_item("shoes")
+            ebay.search_item(item_name)
+            time.sleep(4)
+            ebay.get_item_price(5)
+            time.sleep(2)
+            ebay.get_item_quality(5)
+            time.sleep(2)
+            ebay.get_item_rating(5)
+            time.sleep(2)
+            ebay.get_rating_count(5)
+            # ebay.get_item_quality(5)
 
             #close tab
             # ebay.close_tab(-1)
             # time.sleep(2)
 
-    print("\n\n\n\n\n")
+    #print("\n\n\n\n\n")
 
     index+=1

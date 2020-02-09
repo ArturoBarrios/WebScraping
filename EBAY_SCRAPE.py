@@ -35,6 +35,7 @@ class EBAY:
     #login to ebay
     def login(self):
         login = self.driver.find_elements_by_xpath("//*[contains(text(), 'Sign in')]")
+        print(login)
         login[0].click()
         #send username and password to login
         login_button = None
@@ -65,3 +66,46 @@ class EBAY:
         except:
             print("no search button found")
         search_button.click()
+
+    #get item price
+    def get_item_price(self,items):
+        #get price elements
+        item_name_elements = self.driver.find_elements(By.XPATH,"//span[@class='s-item__price']")
+        for item_name_element in item_name_elements:
+            #print("item name element: ", item_name_element)
+            item_name_content = item_name_element.get_attribute('innerHTML')
+            item_name = item_name_content.strip()
+            print("item price: ",item_name)
+        print "\n\n\n\n"
+
+    #get item quality
+    def get_item_quality(self,items):
+        #get item quality elements
+        item_name_elements = self.driver.find_elements(By.XPATH,"//span[@class='SECONDARY_INFO']")
+        for item_name_element in item_name_elements:
+            #print("item name element: ", item_name_element)
+            item_name_content = item_name_element.get_attribute('innerHTML')
+            item_name = item_name_content.strip()
+            print("item quality: ",item_name)
+        print "\n\n\n\n"
+
+    #get item rating
+    def get_item_rating(self,items):
+        #get item quality elements
+        item_name_elements = self.driver.find_elements(By.XPATH,"//span[@class='clipped']")
+        for item_name_element in item_name_elements:
+            print("item name element: ", item_name_element)
+            item_name_content = item_name_element.get_attribute('innerHTML')
+            item_name = item_name_content.strip()
+            print("item rating: ",item_name)
+        print "\n\n\n\n"
+    #get number of people who have rated the product
+    def get_rating_count(self,items):
+        #get item quality elements
+        item_name_elements = self.driver.find_elements(By.XPATH,"//span[@class='s-item__reviews-count']")
+        for item_name_element in item_name_elements:
+            print("item name element: ", item_name_element)
+            item_name_content = item_name_element.get_attribute('innerHTML')
+            item_name = item_name_content.strip()
+            print("item count: ",item_name)
+        print "\n\n\n\n"

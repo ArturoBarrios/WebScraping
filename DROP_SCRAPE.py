@@ -140,9 +140,10 @@ class DROP:
         try:
             #Text__text__PazWx Text__type--title-0__2XDay
 
-            item_name_element = WebDriverWait(self.driver, 5).until(EC.presence_of_element_located((By.CLASS_NAME, "Text__text__PazWx")))
+            item_name_element = WebDriverWait(self.driver, 5).until(EC.presence_of_element_located((By.CLASS_NAME, "Text__type--title-0__2XDay")))
             item_name_content = item_name_element.get_attribute('innerHTML')
-            item_name = int(item_name_content.strip())
+            item_name = item_name_content.strip()
             print("item name: ",item_name)
         except:
             print("couldn't find item name")
+        return item_name
