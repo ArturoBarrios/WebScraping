@@ -43,5 +43,7 @@ class PIANOMARVEL:
         print("next: ",next)
         next.click()
 
-
+    def close_tab(self,tab_index):
+        self.driver.close()
+        self.driver.switch_to.window(self.driver.window_handles[tab_index])
     
